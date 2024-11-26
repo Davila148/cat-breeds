@@ -1,62 +1,16 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cat_breeds/src/ui/widgets/info_item.dart';
 import 'package:flutter/material.dart';
 
-import '../../config/app_assets.dart';
-import '../../config/app_colors.dart';
-import '../../models/cat_breed_dto.dart';
-import '../widgets/container_image.dart';
-import '../widgets/info_item.dart';
+import '../../../config/app_assets.dart';
+import '../../../models/cat_breed_dto.dart';
+import '../../widgets/container_image.dart';
 
-class DetailsScreen extends StatelessWidget {
+class BuildContent extends StatelessWidget {
   final CatBreedDTO catBreed;
-
-  const DetailsScreen({
-    required this.catBreed,
-    super.key,
-  });
+  const BuildContent({super.key, required this.catBreed});
 
   @override
   Widget build(BuildContext context) {
-    return Theme.of(context).platform == TargetPlatform.iOS
-        ? CupertinoTheme(
-            data: CupertinoThemeData(
-              primaryColor: AppColors()
-                  .whiteColor, // Cambia el color de los íconos automáticamente
-            ),
-            child: CupertinoPageScaffold(
-              backgroundColor: AppColors().backgroundColor,
-              navigationBar: CupertinoNavigationBar(
-                middle: Text(
-                  catBreed.name,
-                  style: TextStyle(
-                    color: AppColors().whiteColor,
-                  ),
-                ),
-                backgroundColor: AppColors().primaryColor,
-              ),
-              child: _buildContent(context),
-            ),
-          )
-        : Scaffold(
-            backgroundColor: AppColors().backgroundColor,
-            appBar: AppBar(
-              backgroundColor: AppColors().primaryColor,
-              centerTitle: true,
-              iconTheme: IconThemeData(
-                color: AppColors().whiteColor, // Cambia el color del ícono aquí
-              ),
-              title: Text(
-                catBreed.name,
-                style: TextStyle(
-                  color: AppColors().whiteColor,
-                ),
-              ),
-            ),
-            body: _buildContent(context),
-          );
-  }
-
-  Column _buildContent(BuildContext context) {
     return Column(
       children: [
         ConstrainedBox(

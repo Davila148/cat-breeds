@@ -1,9 +1,9 @@
 import 'package:cat_breeds/src/models/cat_breed_dto.dart';
-import 'package:cat_breeds/src/ui/screens/details_screen.dart';
+import 'package:cat_breeds/src/ui/screens/details/details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../ui/screens/home_screen.dart';
+import '../ui/screens/home/home_screen.dart';
 
 final GoRouter appRouter = GoRouter(
   onException: (_, GoRouterState state, GoRouter router) {

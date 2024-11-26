@@ -1,21 +1,17 @@
-class CatBreedDTO {
-  final String id;
-  final String name;
-  final String description;
-  final String origin;
-  final int intelligence;
-  final int adaptability;
-  final String lifeSpan;
-  final String imageUrl;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  CatBreedDTO({
-    required this.id,
-    required this.name,
-    required this.description,
-    required this.origin,
-    required this.intelligence,
-    required this.adaptability,
-    required this.lifeSpan,
-    required this.imageUrl,
-  });
+part 'cat_breed_dto.freezed.dart';
+
+@freezed
+class CatBreedDTO with _$CatBreedDTO {
+  const factory CatBreedDTO({
+    required String id,
+    required String name,
+    required String description,
+    required String origin,
+    required int intelligence,
+    required int adaptability,
+    required String lifeSpan,
+    required String imageUrl,
+  }) = _CatBreedDTO;
 }

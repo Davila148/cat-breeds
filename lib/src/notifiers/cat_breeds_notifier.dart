@@ -1,16 +1,14 @@
+import 'package:cat_breeds/src/data/cat_breeds_repository.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:async';
-
-import 'package:http/http.dart' as http;
 
 import '../helpers/debouncer.dart';
 import '../models/cat_breed_dto.dart';
 import '../models/cat_breeds_response.dart';
 
-
 class CatBreedsNotifier extends ChangeNotifier {
-  final String _baseUrl = 'api.thecatapi.com';
+  final CatBreedsRepository _catBreedsRepository = CatBreedsRepository();
 
   final int _limit = 10;
   int _page = 0;
@@ -34,18 +32,8 @@ class CatBreedsNotifier extends ChangeNotifier {
     _getFirstPageCatBreeds();
   }
 
-  Future<dynamic> _getJsonData(String endpoint,
-      [Map<String, String>? params]) async {
-    final url = Uri.https(_baseUrl, endpoint, {
-      ...?params,
-    });
-
-    final response = await http.get(url);
-    return response;
-  }
-
   Future _getCatBreeds() async {
-    final response = await _getJsonData('/v1/breeds', {
+    final response = await _catBreedsRepository.getJsonData('/v1/breeds', {
       'limit': '$_limit',
       'page': '$_page',
     });
@@ -55,7 +43,8 @@ class CatBreedsNotifier extends ChangeNotifier {
     for (var breedData in decodedData) {
       CatBreedResponse catBreedResponse = CatBreedResponse.fromMap(breedData);
 
-      final imageResponse = await _getJsonData('/v1/images/search', {
+      final imageResponse =
+          await _catBreedsRepository.getJsonData('/v1/images/search', {
         'breed_ids': catBreedResponse.id!,
       });
 
@@ -115,7 +104,8 @@ class CatBreedsNotifier extends ChangeNotifier {
   Future searchCatBreeds(String query) async {
     List<CatBreedDTO> catBreedsFiltered = [];
 
-    final response = await _getJsonData('/v1/breeds/search', {
+    final response =
+        await _catBreedsRepository.getJsonData('/v1/breeds/search', {
       'q': query,
     });
 
@@ -124,7 +114,8 @@ class CatBreedsNotifier extends ChangeNotifier {
     for (var breedData in decodedData) {
       CatBreedResponse catBreedResponse = CatBreedResponse.fromMap(breedData);
 
-      final imageResponse = await _getJsonData('/v1/images/search', {
+      final imageResponse =
+          await _catBreedsRepository.getJsonData('/v1/images/search', {
         'breed_ids': catBreedResponse.id!,
       });
 

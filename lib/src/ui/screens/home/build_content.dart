@@ -1,79 +1,29 @@
-import 'package:cat_breeds/src/config/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import '../../config/app_assets.dart';
-import '../../notifiers/cat_breeds_notifier.dart';
-import '../../helpers/search_delegate.dart';
-import '../widgets/container_image.dart';
+import '../../../config/app_assets.dart';
+import '../../../config/app_colors.dart';
+import '../../../notifiers/cat_breeds_notifier.dart';
+import '../../widgets/container_image.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class BuildContent extends StatelessWidget {
+  final RefreshController refreshController;
+  final ScrollController scrollController;
+  final AppColors applicationColors;
+  final BuildContext context;
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  final ScrollController scrollController = ScrollController();
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
-  final applicationAssets = AppAssets();
-  final applicationColors = AppColors();
-
-  @override
-  void initState() {
-    super.initState();
-
-    final catBreedsProvider =
-        Provider.of<CatBreedsNotifier>(context, listen: false);
-
-    scrollController.addListener(() {
-      if (scrollController.position.pixels >=
-              scrollController.position.maxScrollExtent - 500 &&
-          !catBreedsProvider.isLoadingNextPage) {
-        catBreedsProvider.getPaginatedCatBreeds();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    scrollController.dispose();
-    _refreshController.dispose();
-    super.dispose();
-  }
+  const BuildContent({
+    super.key,
+    required this.refreshController,
+    required this.scrollController,
+    required this.applicationColors,
+    required this.context,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: applicationColors.backgroundColor,
-      appBar: AppBar(
-        backgroundColor: applicationColors.primaryColor,
-        centerTitle: true,
-        title: Text(
-          applicationAssets.nameApp,
-          style: TextStyle(
-            color: applicationColors.whiteColor,
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () => showSearch(
-                context: context, delegate: CatBreedSearchDelegate()),
-            icon: const Icon(Icons.search_outlined),
-            color: applicationColors.whiteColor,
-          ),
-        ],
-      ),
-      body: _buildContent(context),
-    );
-  }
-
-  Widget _buildContent(BuildContext context) {
     final catBreedsProvider = Provider.of<CatBreedsNotifier>(context);
 
     final catBreeds = catBreedsProvider.catBreeds;
@@ -81,15 +31,15 @@ class _HomeScreenState extends State<HomeScreen> {
     return catBreedsProvider.isFirstLoading
         ? const Center(child: CircularProgressIndicator())
         : SmartRefresher(
-            controller: _refreshController,
+            controller: refreshController,
             enablePullDown: true,
             onRefresh: _loadCatBreeds,
             header: WaterDropHeader(
               complete: Icon(
                 Icons.check,
-                color: AppColors().primaryColor,
+                color: applicationColors.primaryColor,
               ),
-              waterDropColor: AppColors().primaryColor,
+              waterDropColor: applicationColors.primaryColor,
             ),
             child: ListView.builder(
               controller: scrollController,
@@ -175,6 +125,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final catBreedsProvider =
         Provider.of<CatBreedsNotifier>(context, listen: false);
     await catBreedsProvider.refreshCatBreeds();
-    _refreshController.refreshCompleted();
+    refreshController.refreshCompleted();
   }
 }
